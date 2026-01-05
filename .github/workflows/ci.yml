@@ -23,22 +23,26 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          # If the repo is a Python package (pyproject/setup.py), install it so `python -m heart_disease_mlops...` works.
-          if [ -f pyproject.toml ] || [ -f setup.py ] || [ -f setup.cfg ]; then
-            pip install -e .
-          fi
+
+      #  Ensure repo root is importable (makes `heart_disease_mlops` discoverable)
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
+
+      #  Quick sanity check to fail early with a clear error
+      - name: Sanity check package import
+        run: |
+          python -c "import sys; print(sys.path)"
+          python -c "import heart_disease_mlops; import heart_disease_mlops.src.train; print('Import OK')"
 
       - name: Run unit tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: |
           pytest -q
 
       - name: Train model
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: |
-          python -m heart_disease_mlops.src.train             --data-path heart_disease_mlops/data/heart.csv             --output-dir heart_disease_mlops/models
+          python -m heart_disease_mlops.src.train \
+            --data-path heart_disease_mlops/data/heart.csv \
+            --output-dir heart_disease_mlops/models
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
