@@ -26,14 +26,14 @@ jobs:
 
       - name: Run unit tests
         env:
-          # Ensure pytest can import your package
+          # FIX: Allow pytest to import the local package
           PYTHONPATH: .
         run: |
           pytest -q
 
       - name: Train model
         env:
-          # FIX: Add current directory to python path so it finds 'heart_disease_mlops'
+          # FIX: Add current directory to PYTHONPATH so python -m finds the module
           PYTHONPATH: .
         run: |
           python -m heart_disease_mlops.src.train --data-path heart_disease_mlops/data/heart.csv --output-dir heart_disease_mlops/models
