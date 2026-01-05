@@ -32,7 +32,7 @@ jobs:
       - name: Sanity check package import
         run: |
           python -c "import sys; print(sys.path)"
-          python -c "import heart_disease_mlops; import heart_disease_mlops.src.train; print('Import OK')"
+          python -c "import Assignment-1_MLOPS_Group_73; import Assignment-1_MLOPS_Group_73.src.train; print('Import OK')"
 
       - name: Run unit tests
         run: |
@@ -40,13 +40,13 @@ jobs:
 
       - name: Train model
         run: |
-          python -m heart_disease_mlops.src.train \
-            --data-path heart_disease_mlops/data/heart.csv \
-            --output-dir heart_disease_mlops/models
+          python -m Assignment-1_MLOPS_Group_73.src.train \
+            --data-path Assignment-1_MLOPS_Group_73/data/heart.csv \
+            --output-dir Assignment-1_MLOPS_Group_73/models
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
           name: model-artifacts
           path: |
-            heart_disease_mlops/models/**
+            Assignment-1_MLOPS_Group_73/models/**
